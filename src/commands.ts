@@ -1,8 +1,14 @@
 import type { Todo } from "./types.js";
-import { addTodo, deleteTodo, toggleTodo, clearDone, loadTodos } from "./store.js";
+import {
+  addTodo,
+  deleteTodo,
+  toggleTodo,
+  clearDone,
+  loadTodos,
+} from "./store.js";
 
 export type CommandResult =
-  | { type: "list"; todos: Todo[] }
+  | { type: "list"; todos: Todo[]; options?: { done?: boolean } }
   | { type: "added"; todo: Todo; todos: Todo[] }
   | { type: "deleted"; todo: Todo; todos: Todo[] }
   | { type: "toggled"; todo: Todo; todos: Todo[] }
@@ -23,17 +29,31 @@ Commands:
 
 export function handleCommand(args: string[]): CommandResult {
   const cmd = args[0]?.toLowerCase() ?? "list";
+  const options: Record<string, string> =
+    args.length > 1
+      ? args
+          .slice(1)
+          .map((arg) => arg.split("="))
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+      : { done: "false" };
 
   switch (cmd) {
     case "list": {
       const todos = loadTodos();
-      return { type: "list", todos };
+      const includeDone = options.done === "true";
+      return {
+        type: "list",
+        todos: includeDone ? todos : todos.filter((t) => !t.done),
+      };
     }
 
     case "add": {
       const desc = args.slice(1).join(" ").trim();
       if (!desc) {
-        return { type: "error", message: "Error: missing description.\nUsage: todo add <description>" };
+        return {
+          type: "error",
+          message: "Error: missing description.\nUsage: todo add <description>",
+        };
       }
       const todo = addTodo(desc);
       return { type: "added", todo, todos: loadTodos() };
@@ -42,7 +62,10 @@ export function handleCommand(args: string[]): CommandResult {
     case "done": {
       const id = args[1];
       if (!id) {
-        return { type: "error", message: "Error: missing task id.\nUsage: todo done <id>" };
+        return {
+          type: "error",
+          message: "Error: missing task id.\nUsage: todo done <id>",
+        };
       }
       const toggled = toggleTodo(id);
       if (!toggled) {
@@ -54,7 +77,10 @@ export function handleCommand(args: string[]): CommandResult {
     case "del": {
       const id = args[1];
       if (!id) {
-        return { type: "error", message: "Error: missing task id.\nUsage: todo del <id>" };
+        return {
+          type: "error",
+          message: "Error: missing task id.\nUsage: todo del <id>",
+        };
       }
       const removed = deleteTodo(id);
       if (!removed) {
@@ -73,7 +99,10 @@ export function handleCommand(args: string[]): CommandResult {
     }
 
     default: {
-      return { type: "error", message: `Error: unknown command "${cmd}".\nUse "todo help" to see available commands.` };
+      return {
+        type: "error",
+        message: `Error: unknown command "${cmd}".\nUse "todo help" to see available commands.`,
+      };
     }
   }
 }
