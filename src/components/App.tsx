@@ -42,7 +42,7 @@ export default function App() {
   }, [inputBuffer]);
 
   useInput((input, key) => {
-    if ((key.ctrl && (input === "c" || input === "d"))) {
+    if ((key.ctrl && input === "d")) {
       process.exit(0);
     }
 

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import type { Todo } from "./types.js";
+import type { Todo, TodoPriority } from "./types.js";
 import { generateId } from "./utils.js";
 
 function resolveDataDir(): string {
@@ -31,7 +31,11 @@ function migrateLegacyStore(): void {
   if (fs.existsSync(legacyPath) && !fs.existsSync(STORE_PATH)) {
     ensureDir();
     fs.copyFileSync(legacyPath, STORE_PATH);
-    try { fs.unlinkSync(legacyPath); } catch { /* ignore */ }
+    try {
+      fs.unlinkSync(legacyPath);
+    } catch {
+      /* ignore */
+    }
   }
 }
 
@@ -44,7 +48,7 @@ function readFileSafe(): string | null {
   }
 }
 
-export function loadTodos(): Todo[] {
+export function loadTodos(skipDone = true): Todo[] {
   migrateLegacyStore();
   ensureDir();
 
@@ -57,7 +61,14 @@ export function loadTodos(): Todo[] {
       console.error("todos.json: data is not an array, resetting.");
       return [];
     }
-    return data as Todo[];
+    return data
+      .map((item: unknown) => {
+        const t = item as Partial<Todo>;
+        const p = t.priority;
+        const priority: TodoPriority = p === 1 || p === 2 || p === 3 ? p : 3;
+        return { ...t, priority } as Todo;
+      })
+      .filter((t) => !skipDone || !t.done);
   } catch (err) {
     // Attempt recovery from backup
     const backupRaw = readFileSafe();
@@ -67,9 +78,19 @@ export function loadTodos(): Todo[] {
         if (Array.isArray(backupData)) {
           console.error("todos.json was corrupted; recovered from backup.");
           fs.writeFileSync(STORE_PATH, backupRaw, "utf-8");
-          return backupData as Todo[];
+          return backupData
+            .map((item: unknown) => {
+              const t = item as Partial<Todo>;
+              const p = t.priority;
+              const priority: TodoPriority =
+                p === 1 || p === 2 || p === 3 ? p : 3;
+              return { ...t, priority } as Todo;
+            })
+            .filter((t) => !skipDone || !t.done);
         }
-      } catch { /* backup also corrupted */ }
+      } catch {
+        /* backup also corrupted */
+      }
     }
 
     console.error("todos.json is corrupted and unrecoverable; starting fresh.");
@@ -85,7 +106,9 @@ export function saveTodos(todos: Todo[]): void {
   if (fs.existsSync(STORE_PATH)) {
     try {
       fs.copyFileSync(STORE_PATH, BACKUP_PATH);
-    } catch { /* backup is best-effort */ }
+    } catch {
+      /* backup is best-effort */
+    }
   }
 
   // Atomic write: write to temp file, then rename
@@ -94,13 +117,14 @@ export function saveTodos(todos: Todo[]): void {
   fs.renameSync(tmpPath, STORE_PATH);
 }
 
-export function addTodo(description: string): Todo {
+export function addTodo(description: string, priority: TodoPriority = 3): Todo {
   const todos = loadTodos();
   const todo: Todo = {
     id: generateId(),
     description,
     done: false,
     createdAt: new Date().toISOString(),
+    priority,
   };
   todos.push(todo);
   saveTodos(todos);

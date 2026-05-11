@@ -7,6 +7,12 @@ interface Props {
   todo: Todo;
 }
 
+function activeTaskColor(todo: Todo): string {
+  if (todo.priority === 1) return "red";
+  if (todo.priority === 2) return "#f97316";
+  return "white";
+}
+
 export default function TodoItem({ todo }: Props) {
   const date = new Date(todo.createdAt).toLocaleDateString();
   const status = todo.done ? "☑" : "☐";
@@ -14,7 +20,7 @@ export default function TodoItem({ todo }: Props) {
   return (
     <Text>
       <Text color="gray">[{truncateId(todo.id)}]</Text>{" "}
-      <Text color={todo.done ? "green" : "yellow"} strikethrough={todo.done}>
+      <Text color={todo.done ? "green" : activeTaskColor(todo)} strikethrough={todo.done}>
         {status} {todo.description}
       </Text>{" "}
       <Text color="gray">({date})</Text>
