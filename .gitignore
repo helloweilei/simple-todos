@@ -1,6 +1,9 @@
 node_modules/
 dist/
 todos.json
+todos.json.bak
+.simple-todos/
+
 *.bak
 pnpm-lock.yaml
 pnpm-workspace.yaml

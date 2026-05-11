@@ -4,7 +4,17 @@ import os from "node:os";
 import type { Todo } from "./types.js";
 import { generateId } from "./utils.js";
 
-const DATA_DIR = path.join(os.homedir(), ".simple-todos");
+function resolveDataDir(): string {
+  if (process.env.SIMPLE_TODOS_DATA_DIR) {
+    return path.resolve(process.cwd(), process.env.SIMPLE_TODOS_DATA_DIR);
+  }
+  if (process.env.SIMPLE_TODOS_DEV === "1") {
+    return path.join(process.cwd(), ".simple-todos");
+  }
+  return path.join(os.homedir(), ".simple-todos");
+}
+
+const DATA_DIR = resolveDataDir();
 const STORE_PATH = path.join(DATA_DIR, "todos.json");
 const BACKUP_PATH = path.join(DATA_DIR, "todos.json.bak");
 

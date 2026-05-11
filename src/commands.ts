@@ -13,7 +13,7 @@ export type CommandResult =
   | { type: "deleted"; todo: Todo; todos: Todo[] }
   | { type: "toggled"; todo: Todo; todos: Todo[] }
   | { type: "cleared"; count: number; todos: Todo[] }
-  | { type: "error"; message: string };
+  | { type: "error"; message: string; todos?: Todo[] };
 
 const helpText = `
 Usage: todo <command> [arguments]

@@ -37,15 +37,15 @@ todo
 
 ### Commands
 
-| Command | Example | Description |
-|---------|---------|-------------|
-| `add <description>` | `add Buy milk` | Add a new task |
-| `list` | `list` | Show all tasks (default view) |
-| `done <id>` | `done t_1a2b` | Toggle task completion |
-| `del <id>` | `del t_1a2b` | Delete a task |
-| `clear` | `clear` | Remove all completed tasks |
-| `help` | `help` | Show command help |
-| `exit` / `quit` | `exit` | Exit the program |
+| Command             | Example        | Description                                                    |
+| ------------------- | -------------- | -------------------------------------------------------------- |
+| `add <description>` | `add Buy milk` | Add a new task                                                 |
+| `list`              | `list`         | Show all tasks (default view), `list done=true` show all tasks |
+| `done <id>`         | `done t_1a2b`  | Toggle task completion                                         |
+| `del <id>`          | `del t_1a2b`   | Delete a task                                                  |
+| `clear`             | `clear`        | Remove all completed tasks                                     |
+| `help`              | `help`         | Show command help                                              |
+| `exit` / `quit`     | `exit`         | Exit the program                                               |
 
 `Ctrl+C` or `Ctrl+D` also exits.
 

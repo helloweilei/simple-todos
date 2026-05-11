@@ -30,7 +30,7 @@ function renderFeedback(result: CommandResult): React.ReactNode {
 }
 
 export default function App() {
-  const [todos, setTodos] = useState(() => loadTodos());
+  const [todos, setTodos] = useState(() => loadTodos().filter((t) => !t.done));
   const [inputBuffer, setInputBuffer] = useState("");
   const [message, setMessage] = useState<React.ReactNode>(null);
 
@@ -57,7 +57,7 @@ export default function App() {
       const args = trimmed.split(/\s+/);
       const result = handleCommand(args);
       setMessage(renderFeedback(result));
-      setTodos(loadTodos());
+      setTodos(result.todos ?? []);
       setInputBuffer("");
       return;
     }

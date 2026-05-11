@@ -7,7 +7,7 @@
     "todo": "./dist/index.js"
   },
   "scripts": {
-    "dev": "tsx src/index.tsx",
+    "dev": "cross-env SIMPLE_TODOS_DEV=1 tsx src/index.tsx",
     "build": "tsc",
     "postbuild": "chmod +x dist/index.js",
     "prepublishOnly": "npm run build",
@@ -42,6 +42,7 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/react": "^18.3.0",
+    "cross-env": "^7.0.3",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
   }
