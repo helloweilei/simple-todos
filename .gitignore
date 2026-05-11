@@ -1,3 +1,9 @@
 node_modules/
 dist/
 todos.json
+*.bak
+pnpm-lock.yaml
+pnpm-workspace.yaml
+.DS_Store
+.vscode/
+.idea/

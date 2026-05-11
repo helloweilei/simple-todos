@@ -1,7 +1,7 @@
 {
   "name": "simple-todos",
   "version": "1.0.0",
-  "description": "A React + Ink CLI todo list manager",
+  "description": "A React + Ink interactive CLI todo list manager",
   "type": "module",
   "bin": {
     "todo": "./dist/index.js"
@@ -9,10 +9,32 @@
   "scripts": {
     "dev": "tsx src/index.tsx",
     "build": "tsc",
+    "postbuild": "chmod +x dist/index.js",
+    "prepublishOnly": "npm run build",
     "start": "node dist/index.js"
   },
-  "keywords": ["todo", "cli", "ink", "react"],
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "todo",
+    "cli",
+    "ink",
+    "react",
+    "tui",
+    "task-manager"
+  ],
   "license": "MIT",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "ink": "^5.2.0",
     "react": "^18.3.0"
