@@ -42,8 +42,17 @@ export default function App() {
   }, [inputBuffer]);
 
   useInput((input, key) => {
-    if ((key.ctrl && input === "d")) {
+    if (key.ctrl && input === "d") {
       process.exit(0);
+    }
+
+    if (key.ctrl && (input === "c" || input === "\x03")) {
+      setMessage(
+        <Text color="gray">
+          Ctrl+C does not exit. Press Ctrl+D or type exit / quit to leave.
+        </Text>,
+      );
+      return;
     }
 
     if (key.return) {
