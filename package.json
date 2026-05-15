@@ -1,6 +1,6 @@
 {
   "name": "simple-todos",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A React + Ink interactive CLI todo list manager",
   "type": "module",
   "bin": {
