@@ -68,7 +68,8 @@ export function loadTodos(skipDone = true): Todo[] {
         const priority: TodoPriority = p === 1 || p === 2 || p === 3 ? p : 3;
         return { ...t, priority } as Todo;
       })
-      .filter((t) => !skipDone || !t.done);
+      .filter((t) => !skipDone || !t.done)
+      .sort((a, b) => a.priority - b.priority);
   } catch (err) {
     // Attempt recovery from backup
     const backupRaw = readFileSafe();
@@ -86,7 +87,8 @@ export function loadTodos(skipDone = true): Todo[] {
                 p === 1 || p === 2 || p === 3 ? p : 3;
               return { ...t, priority } as Todo;
             })
-            .filter((t) => !skipDone || !t.done);
+            .filter((t) => !skipDone || !t.done)
+            .sort((a, b) => a.priority - b.priority);
         }
       } catch {
         /* backup also corrupted */

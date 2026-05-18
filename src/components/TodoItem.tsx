@@ -1,7 +1,11 @@
 import React from "react";
 import { Text } from "ink";
 import type { Todo } from "../types.js";
-import { truncateId } from "../utils.js";
+import {
+  daysSinceCreated,
+  daysSinceCreatedColor,
+  truncateId,
+} from "../utils.js";
 
 interface Props {
   todo: Todo;
@@ -15,6 +19,8 @@ function activeTaskColor(todo: Todo): string {
 
 export default function TodoItem({ todo }: Props) {
   const date = new Date(todo.createdAt).toLocaleDateString();
+  const days = daysSinceCreated(todo.createdAt);
+  const ageColor = daysSinceCreatedColor(days);
   const status = todo.done ? "☑" : "☐";
 
   return (
@@ -24,6 +30,10 @@ export default function TodoItem({ todo }: Props) {
         {status} {todo.description}
       </Text>{" "}
       <Text color="gray">({date})</Text>
+      {days > 0 && <Text color={ageColor}>
+        {" "}
+        · {days} days passed
+      </Text>}
     </Text>
   );
 }
